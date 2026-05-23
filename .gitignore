@@ -32,7 +32,24 @@ analysis-history*.json
 captured-content*.json
 capturedContent*.json
 
-# Local Chrome extension debug drafts
+# Local Chrome extension debug drafts and intermediate files
 manifest-*.json
 debug-*.html
 popup-debug.html
+
+# Draft and alternative versions of source files
+*-simple.js
+*-clean.js
+*-fixed.js
+background.js
+
+# Test and debug HTML pages
+popup-test.html
+test-*.html
+
+# Test scripts and debug documents
+test.js
+test-*.md
+DEBUG-GUIDE.md
+SYNTAX-FIX-GUIDE.md
+fix-extension.md
