@@ -1,0 +1,38 @@
+# Local tool and editor settings
+.claude/
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Dependencies and build artifacts
+node_modules/
+dist/
+build/
+*.zip
+*.crx
+*.xpi
+
+# Runtime logs and generated analysis data
+*.log
+captures/
+exports/
+analysis-history*.json
+captured-content*.json
+capturedContent*.json
+
+# Local Chrome extension debug drafts
+manifest-*.json
+debug-*.html
+popup-debug.html

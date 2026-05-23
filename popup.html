@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>短剧解构师</title>
+    <style>
+        body {
+            width: 320px;
+            min-height: 400px;
+            margin: 0;
+            padding: 16px;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            margin-top: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* Analysis Report Styles */
+        .analysis-report {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .report-section {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .report-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .report-content {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .plot-point {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .plot-point:last-child {
+            border-bottom: none;
+        }
+
+        .plot-time {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            min-width: 35px;
+            text-align: center;
+        }
+
+        .plot-type {
+            background: rgba(255,215,0,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: auto;
+        }
+
+        .intensity-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        .intensity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A, #FFEB3B, #FF9800, #F44336);
+            transition: width 0.3s ease;
+        }
+
+        .character-card {
+            background: rgba(255,255,255,0.05);
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .character-name {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 11px;
+        }
+
+        .character-role {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .character-traits {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .trait-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+        }
+
+        .trope-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .trope-item:last-child {
+            border-bottom: none;
+        }
+
+        .confidence-badge {
+            background: rgba(76,175,80,0.3);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .suggestion-item {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            font-size: 11px;
+            border-left: 2px solid #4CAF50;
+        }
+
+        .summary-text {
+            line-height: 1.5;
+            text-align: justify;
+            font-size: 12px;
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        .loading-text {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">🎬 短剧解构师</div>
+        <div class="subtitle">AI智能分析，创意改编助手</div>
+    </div>
+
+    <div class="status" id="status">
+        🔍 正在检测当前页面...
+    </div>
+
+    <button class="analyze-btn" id="analyzeBtn" disabled>
+        🚀 开始深度解构
+    </button>
+
+    <!-- Loading State -->
+    <div class="loading" id="loadingState">
+        <div class="spinner"></div>
+        <div class="loading-text">AI正在分析剧情结构...</div>
+    </div>
+
+    <!-- Analysis Report -->
+    <div class="analysis-report" id="analysisReport">
+        <!-- Summary Section -->
+        <div class="report-section">
+            <div class="report-title">
+                📝 剧情摘要
+            </div>
+            <div class="report-content">
+                <div class="summary-text" id="summaryText"></div>
+            </div>
+        </div>
+
+        <!-- Plot Points Section -->
+        <div class="report-section">
+            <div class="report-title">
+                🎬 关键剧情点
+            </div>
+            <div class="report-content" id="plotPoints"></div>
+        </div>
+
+        <!-- Characters Section -->
+        <div class="report-section">
+            <div class="report-title">
+                👥 角色分析
+            </div>
+            <div class="report-content" id="charactersSection"></div>
+        </div>
+
+        <!-- Tropes Section -->
+        <div class="report-section">
+            <div class="report-title">
+                🎭 套路标签
+            </div>
+            <div class="report-content" id="tropesSection"></div>
+        </div>
+
+        <!-- Adaptation Suggestions Section -->
+        <div class="report-section">
+            <div class="report-title">
+                💡 改编建议
+            </div>
+            <div class="report-content" id="suggestionsSection"></div>
+        </div>
+    </div>
+
+    <!-- Legacy Results (Hidden) -->
+    <div class="results" id="results" style="display: none;"></div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
