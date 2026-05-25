@@ -1,41 +1,16 @@
 {
   "manifest_version": 3,
   "version": "0.1.0",
-  "name": "短剧解构师 - 测试版",
-  "description": "一键AI解构短剧：提炼摘要、标注爽点、分析套路，为创意改编提供蓝图。",
+  "name": "内容解构演示 - UI 原型",
+  "description": "演示性界面原型，仅在扩展弹窗内展示预设的示例报告；不读取、不上传、不访问任何网站内容。",
 
   "permissions": [
-    "activeTab",
     "storage"
-  ],
-
-  "host_permissions": [
-    "*://*.douyin.com/*",
-    "*://*.ixigua.com/*",
-    "*://*.kuaishou.com/*",
-    "*://*.bilibili.com/*"
-  ],
-
-  "background": {
-    "service_worker": "background-clean.js"
-  },
-
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*.douyin.com/*",
-        "*://*.ixigua.com/*",
-        "*://*.kuaishou.com/*",
-        "*://*.bilibili.com/*"
-      ],
-      "js": ["content.js"],
-      "run_at": "document_idle"
-    }
   ],
 
   "action": {
     "default_popup": "popup.html",
-    "default_title": "短剧解构师 - 测试版",
+    "default_title": "内容解构演示 - UI 原型",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
